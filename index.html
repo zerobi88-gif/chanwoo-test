@@ -1,0 +1,382 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#ffffff" />
+  <title>보험메모장 | 보상사례 검색</title>
+  <style>
+:root{
+  --red:#e31b23;
+  --red-soft:#fff1f2;
+  --ink:#151515;
+  --muted:#6f7277;
+  --line:#e9eaec;
+  --panel:#f7f8f9;
+  --white:#fff;
+  --shadow:0 18px 50px rgba(20,20,20,.08);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:Pretendard,"Apple SD Gothic Neo","Noto Sans KR",system-ui,-apple-system,sans-serif;color:var(--ink);background:#fff;letter-spacing:-.02em}
+button,input{font:inherit}
+.topbar{height:84px;display:flex;align-items:center;justify-content:space-between;padding:0 max(28px,calc((100vw - 1180px)/2));border-bottom:1px solid var(--line);position:sticky;top:0;background:rgba(255,255,255,.92);backdrop-filter:blur(14px);z-index:10}
+.brand-wrap{display:flex;align-items:center;gap:14px}.brand-mark{width:42px;height:42px;border-radius:12px;background:var(--red);color:#fff;display:grid;place-items:center;font-weight:900;font-size:22px}.eyebrow{font-size:10px;font-weight:800;letter-spacing:.15em;color:#9a9ca0}.topbar h1{font-size:20px;margin:2px 0 0}.version{font-size:12px;color:var(--muted);padding:8px 12px;border:1px solid var(--line);border-radius:999px}
+main{max-width:1180px;margin:0 auto;padding:0 28px}.hero{padding:76px 0 48px}.hero-kicker{color:var(--red);font-size:13px;font-weight:800;margin:0 0 16px}.hero h2{font-size:clamp(36px,6vw,68px);line-height:1.08;margin:0;letter-spacing:-.055em;font-weight:650}.hero h2 strong{font-weight:850}.hero-copy{font-size:17px;color:var(--muted);margin:24px 0 34px;max-width:680px;line-height:1.7}
+.search-shell{height:72px;border:1px solid #dfe1e4;border-radius:18px;display:flex;align-items:center;padding:0 20px;box-shadow:var(--shadow);max-width:880px;background:#fff;transition:.2s}.search-shell:focus-within{border-color:#b9bcc1;box-shadow:0 20px 60px rgba(20,20,20,.12)}.search-shell svg{width:24px;height:24px;fill:none;stroke:#7d8085;stroke-width:1.8}.search-shell input{border:0;outline:0;flex:1;height:100%;font-size:20px;padding:0 16px;color:var(--ink);min-width:0}.search-shell input::placeholder{color:#a8aaae}.search-shell kbd{font-size:12px;color:#94969a;background:#f2f3f4;border:1px solid #e4e5e7;border-radius:7px;padding:4px 8px}
+.quick-keywords{display:flex;gap:8px;flex-wrap:wrap;margin-top:18px}.quick-keywords button,.filters button{border:1px solid var(--line);background:#fff;color:#575a60;border-radius:999px;padding:9px 13px;cursor:pointer;font-size:13px;transition:.15s}.quick-keywords button:hover,.filters button:hover{border-color:#c7c9cc;color:#111}.filters button.active{background:#171717;color:#fff;border-color:#171717}
+.toolbar{display:flex;justify-content:space-between;gap:20px;align-items:center;padding:22px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);position:sticky;top:84px;background:rgba(255,255,255,.95);backdrop-filter:blur(14px);z-index:9}.filters{display:flex;gap:8px;overflow:auto;padding-bottom:2px}.result-meta{white-space:nowrap;color:var(--muted);font-size:13px}.result-meta strong{color:var(--ink);font-size:16px}
+.results{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;padding:30px 0 80px}.card{border:1px solid var(--line);border-radius:20px;padding:24px;background:#fff;cursor:pointer;transition:.18s;position:relative;overflow:hidden}.card:hover{transform:translateY(-2px);box-shadow:0 14px 34px rgba(0,0,0,.07);border-color:#d7d8db}.card-top{display:flex;justify-content:space-between;gap:16px;align-items:flex-start}.badges{display:flex;flex-wrap:wrap;gap:7px}.badge{font-size:11px;font-weight:700;padding:6px 9px;border-radius:999px;background:#f2f3f4;color:#55585d}.badge.memo{background:var(--red-soft);color:#b2161c}.open-icon{color:#b5b7bb;font-size:20px}.card h3{font-size:22px;line-height:1.35;margin:18px 0 13px;letter-spacing:-.035em}.codes{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px}.code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;color:#4b4e53;background:#f6f7f8;padding:6px 9px;border-radius:8px}.conclusion{font-size:14px;line-height:1.7;color:#55585d;margin:0}.coverage{display:flex;gap:6px;flex-wrap:wrap;margin-top:18px}.coverage span{font-size:12px;color:#44474c;border:1px solid #e6e7e9;padding:6px 8px;border-radius:8px}.empty{grid-column:1/-1;padding:72px 20px;text-align:center;border:1px dashed #d9dbde;border-radius:20px;background:#fafafa}.empty strong{display:block;font-size:20px;margin-bottom:8px}.empty p{color:var(--muted);margin:0}
+footer{border-top:1px solid var(--line);padding:28px max(28px,calc((100vw - 1180px)/2)) 44px;color:#7b7e83;font-size:12px;line-height:1.7}footer strong{color:#55585d}
+dialog{width:min(760px,calc(100vw - 32px));border:0;border-radius:24px;padding:0;box-shadow:0 30px 100px rgba(0,0,0,.24)}dialog::backdrop{background:rgba(0,0,0,.32);backdrop-filter:blur(4px)}.dialog-close{position:absolute;right:18px;top:16px;border:0;background:#f1f2f3;width:36px;height:36px;border-radius:50%;font-size:24px;cursor:pointer;color:#555}.detail{padding:38px}.detail .category{font-size:12px;font-weight:800;color:var(--red);margin-bottom:9px}.detail h2{font-size:30px;margin:0 44px 12px 0;letter-spacing:-.04em}.detail .source{font-size:11px;color:#9a9ca0;margin-bottom:28px}.detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:24px}.detail-box{background:#f7f8f9;border-radius:14px;padding:15px}.detail-box span{display:block;color:#8a8d92;font-size:11px;margin-bottom:7px}.detail-box strong{font-size:14px}.section{border-top:1px solid var(--line);padding-top:22px;margin-top:22px}.section h4{font-size:13px;margin:0 0 10px}.section p,.section li{font-size:14px;line-height:1.8;color:#4f5257}.section ul{padding-left:19px;margin:0}.tag-row{display:flex;gap:6px;flex-wrap:wrap}.tag-row span{font-size:12px;background:#f2f3f4;padding:6px 8px;border-radius:8px;color:#53565b}
+mark{background:#fff0a8;padding:0 .05em;border-radius:2px}
+@media(max-width:760px){.topbar{height:72px;padding:0 18px}.version{display:none}main{padding:0 18px}.hero{padding:48px 0 34px}.hero-copy{font-size:15px}.search-shell{height:62px;border-radius:16px}.search-shell input{font-size:17px}.toolbar{top:72px}.results{grid-template-columns:1fr;padding-top:22px}.card{padding:20px}.detail{padding:28px 22px}.detail-grid{grid-template-columns:1fr}}
+
+</style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand-wrap">
+      <div class="brand-mark">M</div>
+      <div>
+        <div class="eyebrow">COMPENSATION KNOWLEDGE BASE</div>
+        <h1>보험메모장</h1>
+      </div>
+    </div>
+    <span class="version">26.09 시즌2 · prototype</span>
+  </header>
+
+  <main>
+    <section class="hero">
+      <p class="hero-kicker">보상사례 통합검색</p>
+      <h2>질병명·수술명·진단코드로<br><strong>바로 찾아보세요.</strong></h2>
+      <p class="hero-copy">메리츠보상마케팅에 누적된 보험메모를 검색 가능한 지식 DB 형태로 재구성한 시제품입니다.</p>
+
+      <div class="search-shell">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m21 21-4.3-4.3m2.3-5.2A7.5 7.5 0 1 1 4 11.5a7.5 7.5 0 0 1 15 0Z"/></svg>
+        <input id="searchInput" type="search" autocomplete="off" placeholder="예: 백내장, S93, 치핵, CT, 맘모톰" aria-label="보상사례 검색" />
+        <kbd>/</kbd>
+      </div>
+
+      <div id="quickKeywords" class="quick-keywords" aria-label="빠른 검색어"></div>
+    </section>
+
+    <section class="toolbar" aria-label="검색 필터">
+      <div id="categoryFilters" class="filters"></div>
+      <div class="result-meta"><strong id="resultCount">0</strong>건</div>
+    </section>
+
+    <section id="results" class="results" aria-live="polite"></section>
+  </main>
+
+  <footer>
+    <p><strong>교육·업무 참고용.</strong> 실제 보험금 지급 여부는 가입시기, 계약내용, 약관, 진단·수술 기록 및 사고조사 결과에 따라 달라질 수 있습니다.</p>
+  </footer>
+
+  <dialog id="detailDialog">
+    <button class="dialog-close" id="dialogClose" aria-label="닫기">×</button>
+    <div id="dialogContent"></div>
+  </dialog>
+
+  <script>
+window.CASES = [
+  {
+    id: "memo-001-typhoon",
+    memoNo: "#001",
+    title: "특수건물 아파트 태풍피해 / 풍수재해",
+    category: "재물",
+    keywords: ["태풍", "풍수재해", "특수건물", "아파트", "14층", "16층", "풍재", "수재"],
+    diagnosisCode: "",
+    procedureCode: "",
+    coverage: ["풍수재해(특수건물)"],
+    conclusion: "16층 이상 특수건물의 14층 피해도 층수만으로 면책되는 것은 아니며, 태풍으로 인한 직접손해라면 풍수재해(특수건물) 보상 검토가 가능.",
+    checkpoints: ["태풍과 손해 사이의 직접 인과관계", "건물의 특수건물 해당 여부", "현장조사 및 면책사유 확인"],
+    source: "26.09 보험메모장 시즌2 복원 기록"
+  },
+  {
+    id: "memo-002-water",
+    memoNo: "#002",
+    title: "세입자 가입 주택화재보험 / 급배수 담보",
+    category: "재물",
+    keywords: ["세입자", "임차인", "급배수", "누수", "주택화재", "재물손해", "보험금 수령자"],
+    diagnosisCode: "",
+    procedureCode: "",
+    coverage: ["급배수시설누출손해"],
+    conclusion: "임차인의 재물에 발생한 직접손해라면 보험금은 임차인에게 지급 검토.",
+    checkpoints: ["사고원인", "현장실사", "계약 적정성", "고지·통지의무", "면책사유"],
+    source: "26.09 보험메모장 시즌2 복원 기록"
+  },
+  {
+    id: "memo-024-auto-ct",
+    memoNo: "#024",
+    title: "자동차사고 CT / 실손과 정액담보",
+    category: "검사·치료",
+    keywords: ["자동차사고", "교통사고", "CT", "컴퓨터단층촬영", "실손", "자동차보험", "본인부담금"],
+    diagnosisCode: "",
+    procedureCode: "",
+    coverage: ["실손의료비", "급여 CT 관련 정액담보"],
+    conclusion: "자동차보험에서 CT 비용을 전액 처리해 본인부담금이 0원이면 실손 지급액은 없음. 정액형 급여 CT 담보는 해당 약관의 정의와 지급요건을 별도로 확인.",
+    checkpoints: ["자동차보험 처리내역", "실제 본인부담금 발생 여부", "정액담보의 급여 CT 정의 및 지급조건"],
+    source: "26.09 보험메모장 시즌2 복원 기록"
+  },
+  {
+    id: "memo-035-thyroid",
+    memoNo: "#035",
+    title: "갑상선 양성신생물 다빈치 갑상선엽절제술",
+    category: "질병수술",
+    keywords: ["갑상선", "양성신생물", "D34", "다빈치", "갑상선엽절제술", "로봇수술"],
+    diagnosisCode: "D34",
+    procedureCode: "",
+    coverage: ["질병수술비", "1-5종수술비 3종", "실손의료비"],
+    conclusion: "질병수술비, 1-5종수술비 3종 및 실손 보상 검토.",
+    checkpoints: ["최종 진단명·진단코드", "실제 시행 수술명", "가입시기별 약관 및 면책·감액"],
+    source: "26.09 보험메모장 시즌2 복원 기록"
+  },
+  {
+    id: "memo-043-hemorrhoid",
+    memoNo: "#043",
+    title: "치핵 수술 보상판정",
+    category: "질병수술",
+    keywords: ["치핵", "치질", "K64.9", "Q3013", "항문", "수술비"],
+    diagnosisCode: "K64.9",
+    procedureCode: "Q3013",
+    coverage: ["131대질병수술비", "1-5종수술비 1종", "1-7종수술비 1종"],
+    conclusion: "질병수술비는 불가, 131대질병수술비는 가능 검토. 1-5종과 1-7종은 각각 1종으로 분류.",
+    checkpoints: ["수술코드 Q3013 확인", "가입시기별 질병수술비 약관", "131대 대상질병 및 수술 정의 확인"],
+    source: "26.09 보험메모장 시즌2 복원 기록"
+  },
+  {
+    id: "memo-062-cataract",
+    memoNo: "#062",
+    title: "백내장 수정체유화술",
+    category: "질병수술",
+    keywords: ["백내장", "H25", "수정체유화술", "S5119", "안과", "렌즈"],
+    diagnosisCode: "H25",
+    procedureCode: "S5119",
+    coverage: ["질병수술비", "130/131대 백내장수술비", "1-5종수술비 1종", "1-7종수술비 1종"],
+    conclusion: "질병수술비, 130/131대 백내장 관련 수술비, 1-5종 1종, 1-7종 1종 보상 검토.",
+    checkpoints: ["백내장 진단코드", "수정체유화술 코드", "다초점렌즈 등 비급여 항목은 실손 기준 별도 확인"],
+    source: "26.09 보험메모장 시즌2 복원 기록"
+  },
+  {
+    id: "mammotome-5gen",
+    memoNo: "",
+    title: "5세대 맘모톰 보상",
+    category: "실손",
+    keywords: ["맘모톰", "유방", "양성병변", "생검", "절제술", "5세대", "신의료기술", "NECA"],
+    diagnosisCode: "",
+    procedureCode: "",
+    coverage: ["5세대 실손"],
+    conclusion: "양성병변 절제술이 급여·비급여 결정 전 신의료기술에 해당하는 경우 면책 검토. 생검은 별도 판단.",
+    checkpoints: ["시행 목적이 생검인지 절제인지", "급여·비급여 결정 상태", "신의료기술 평가 상태", "가입 약관"],
+    source: "메리츠보상마케팅 보험메모 복원 기록"
+  },
+  {
+    id: "brain-aneurysm-case",
+    memoNo: "",
+    title: "비파열성 뇌동맥류 클립결찰술",
+    category: "2대질환",
+    keywords: ["비파열성 뇌동맥류", "뇌동맥류", "클립결찰술", "두통", "특순통치", "검사비", "수술비"],
+    diagnosisCode: "",
+    procedureCode: "",
+    coverage: ["특정순환계 통합치료 관련 담보"],
+    conclusion: "30세 여성, 가입 17일 뒤 비파열성 뇌동맥류 발견 후 클립결찰술 시행. 특순통치에서 검사비·수술비 수령 사례.",
+    checkpoints: ["가입일 2026-01-13", "사고일 2026-01-30", "검사 및 수술 시행내역"],
+    source: "보험금 지급 사례 저장 이미지"
+  },
+  {
+    id: "svt-case",
+    memoNo: "",
+    title: "심실상 빈맥 전극도자절제술",
+    category: "2대질환",
+    keywords: ["심실상 빈맥", "빈맥", "전극도자절제술", "심계항진", "어지럼", "특순통치", "검사비", "수술비"],
+    diagnosisCode: "",
+    procedureCode: "",
+    coverage: ["특정순환계 통합치료 관련 담보"],
+    conclusion: "22세 남성, 가입 74일 뒤 심실상 빈맥 진단 후 전극도자절제술 시행. 특순통치에서 검사비·수술비 수령 사례.",
+    checkpoints: ["가입일 2025-08-18", "사고일 2025-10-31", "전극도자절제술 시행 확인"],
+    source: "보험금 지급 사례 저장 이미지"
+  },
+  {
+    id: "injury-mild-s93",
+    memoNo: "",
+    title: "러닝 중 발목인대 염좌",
+    category: "상해진단",
+    keywords: ["러닝", "발목", "염좌", "발목인대", "S93", "경증", "상해진단비"],
+    diagnosisCode: "S93",
+    procedureCode: "",
+    coverage: ["경증 및 기타 상해 진단비"],
+    conclusion: "러닝 중 발목을 접질러 발목인대 염좌(S93) 진단 시 경증 및 기타 상해 진단비 3만원 보장 사례.",
+    checkpoints: ["상해사고 경위", "S93 진단 확인", "가입금액 및 약관 확인"],
+    source: "상해진단 및 치료 보상사례 저장 이미지"
+  },
+  {
+    id: "injury-moderate-s52",
+    memoNo: "",
+    title: "빙판길 아래팔 요골 골절 + 관혈적 골절정복술",
+    category: "상해진단",
+    keywords: ["빙판길", "요골 골절", "아래팔 골절", "S52", "N1601", "관혈적 골절정복술", "중등증"],
+    diagnosisCode: "S52",
+    procedureCode: "N1601",
+    coverage: ["중등증 상해 진단비", "중등증 상해근골 주요처치및수술비(급여)"],
+    conclusion: "아래팔 요골 골절(S52)로 중등증 상해 진단비 20만원, 관혈적 골절정복술(N1601) 시행 시 주요처치및수술비 50만원 보장 사례.",
+    checkpoints: ["골절 진단코드", "관혈적 정복술 코드", "급여 처치·수술 여부"],
+    source: "상해진단 및 치료 보상사례 저장 이미지"
+  },
+  {
+    id: "injury-severe-s98",
+    memoNo: "",
+    title: "중장비 사고 발목·발 외상성 절단 + 사지절단술",
+    category: "상해진단",
+    keywords: ["중장비", "외상성 절단", "발목", "발", "S98", "N0574", "사지절단술", "중증"],
+    diagnosisCode: "S98",
+    procedureCode: "N0574",
+    coverage: ["중증 상해 진단비", "중증 상해 근골 주요처치및수술비(급여)"],
+    conclusion: "발목·발 외상성 절단(S98)로 중증 상해 진단비 300만원, 사지절단술(N0574) 시행 시 주요처치및수술비 100만원 보장 사례.",
+    checkpoints: ["외상성 절단 진단", "사지절단술 시행 확인", "급여 처치·수술 여부"],
+    source: "상해진단 및 치료 보상사례 저장 이미지"
+  },
+  {
+    id: "injury-1to5-plus",
+    memoNo: "",
+    title: "상해 1-5종수술비 PLUS 반복수술 사례",
+    category: "상해수술",
+    keywords: ["상해 1-5종", "1-5종수술비", "PLUS", "반복수술", "같은 계약연도", "두 번째 수술", "300만원"],
+    diagnosisCode: "",
+    procedureCode: "",
+    coverage: ["상해 1-5종수술비 PLUS"],
+    conclusion: "같은 계약연도 기준 첫 번째 수술 50만원 지급 후 두 번째 수술에서 250만원 추가 지급, 총 지급액 300만원으로 정리된 사례.",
+    checkpoints: ["같은 계약연도 여부", "수술 종 분류", "선행 지급액 및 추가지급 계산"],
+    source: "05_injury_example 저장 이미지"
+  },
+  {
+    id: "larynx-cautery",
+    memoNo: "",
+    title: "인후두소작술 수술 여부",
+    category: "수술판정",
+    keywords: ["인후두소작술", "소작술", "후두", "인후두", "수술 여부"],
+    diagnosisCode: "",
+    procedureCode: "",
+    coverage: ["수술비 판정"],
+    conclusion: "보험메모에서 비수술로 안내된 사례.",
+    checkpoints: ["실제 시술명", "약관상 수술 정의", "시술 방법 및 절단·절제 등 해당 여부"],
+    source: "메리츠보상마케팅 과거 메모 복원 기록"
+  },
+  {
+    id: "panretinal-photocoagulation",
+    memoNo: "",
+    title: "범망막광응고술(레이저치료) 수술 여부",
+    category: "수술판정",
+    keywords: ["범망막광응고술", "광응고술", "레이저치료", "망막", "수술 여부"],
+    diagnosisCode: "",
+    procedureCode: "",
+    coverage: ["수술비 판정"],
+    conclusion: "보험메모에서 수술로 안내된 사례.",
+    checkpoints: ["시술명 및 시행기록", "레이저 광응고술 여부", "가입 약관상 수술 정의"],
+    source: "메리츠보상마케팅 과거 메모 복원 기록"
+  }
+];
+
+</script>
+  <script>
+const cases = Array.isArray(window.CASES) ? window.CASES : [];
+const searchInput = document.getElementById('searchInput');
+const resultsEl = document.getElementById('results');
+const resultCount = document.getElementById('resultCount');
+const filtersEl = document.getElementById('categoryFilters');
+const quickEl = document.getElementById('quickKeywords');
+const dialog = document.getElementById('detailDialog');
+const dialogContent = document.getElementById('dialogContent');
+const dialogClose = document.getElementById('dialogClose');
+let category = '전체';
+
+const normalize = (s='') => String(s).toLowerCase().replace(/\s+/g,'').replace(/[()·/,_-]/g,'');
+const escapeHtml = (s='') => String(s).replace(/[&<>'"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
+
+function searchableText(item){
+  return [item.memoNo,item.title,item.category,item.diagnosisCode,item.procedureCode,item.conclusion,...item.keywords,...item.coverage,...item.checkpoints].join(' ');
+}
+function score(item, q){
+  if(!q) return 1;
+  const nq=normalize(q), title=normalize(item.title), all=normalize(searchableText(item));
+  if(title===nq) return 100;
+  if(title.startsWith(nq)) return 70;
+  if(title.includes(nq)) return 50;
+  if(normalize(item.diagnosisCode)===nq || normalize(item.procedureCode)===nq) return 60;
+  if((item.keywords||[]).some(k=>normalize(k)===nq)) return 45;
+  if(all.includes(nq)) return 20;
+  const parts=q.trim().toLowerCase().split(/\s+/).filter(Boolean);
+  return parts.length && parts.every(p=>searchableText(item).toLowerCase().includes(p)) ? 10 : 0;
+}
+function highlight(text,q){
+  const safe=escapeHtml(text||'');
+  if(!q.trim()) return safe;
+  const tokens=q.trim().split(/\s+/).filter(Boolean).sort((a,b)=>b.length-a.length);
+  return tokens.reduce((acc,t)=>{
+    const e=t.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+    return acc.replace(new RegExp(`(${e})`,'gi'),'<mark>$1</mark>');
+  },safe);
+}
+function render(){
+  const q=searchInput.value.trim();
+  let list=cases.map(item=>({item,s:score(item,q)})).filter(x=>x.s>0);
+  if(category!=='전체') list=list.filter(x=>x.item.category===category);
+  list.sort((a,b)=>b.s-a.s || (a.item.memoNo||'').localeCompare(b.item.memoNo||''));
+  resultCount.textContent=list.length;
+  if(!list.length){
+    resultsEl.innerHTML=`<div class="empty"><strong>검색 결과가 없습니다.</strong><p>현재 복원된 보험메모 DB에는 해당 자료가 아직 등록되지 않았습니다.</p></div>`;
+    return;
+  }
+  resultsEl.innerHTML=list.map(({item})=>`
+    <article class="card" data-id="${escapeHtml(item.id)}" tabindex="0" role="button" aria-label="${escapeHtml(item.title)} 상세보기">
+      <div class="card-top"><div class="badges">${item.memoNo?`<span class="badge memo">${escapeHtml(item.memoNo)}</span>`:''}<span class="badge">${escapeHtml(item.category)}</span></div><span class="open-icon">↗</span></div>
+      <h3>${highlight(item.title,q)}</h3>
+      <div class="codes">${item.diagnosisCode?`<span class="code">진단 ${highlight(item.diagnosisCode,q)}</span>`:''}${item.procedureCode?`<span class="code">수술 ${highlight(item.procedureCode,q)}</span>`:''}</div>
+      <p class="conclusion">${highlight(item.conclusion,q)}</p>
+      <div class="coverage">${item.coverage.slice(0,3).map(v=>`<span>${highlight(v,q)}</span>`).join('')}${item.coverage.length>3?`<span>+${item.coverage.length-3}</span>`:''}</div>
+    </article>`).join('');
+}
+function setupFilters(){
+  const cats=['전체',...new Set(cases.map(x=>x.category))];
+  filtersEl.innerHTML=cats.map(c=>`<button class="${c==='전체'?'active':''}" data-category="${escapeHtml(c)}">${escapeHtml(c)}</button>`).join('');
+  filtersEl.addEventListener('click',e=>{
+    const btn=e.target.closest('button[data-category]'); if(!btn) return;
+    category=btn.dataset.category;
+    [...filtersEl.querySelectorAll('button')].forEach(b=>b.classList.toggle('active',b===btn));
+    render();
+  });
+}
+function setupQuick(){
+  const words=['백내장','치핵','S93','CT','맘모톰','뇌동맥류','태풍'];
+  quickEl.innerHTML=words.map(w=>`<button data-q="${w}">${w}</button>`).join('');
+  quickEl.addEventListener('click',e=>{const b=e.target.closest('button[data-q]');if(!b)return;searchInput.value=b.dataset.q;category='전체';setupActiveAll();render();searchInput.focus();});
+}
+function setupActiveAll(){[...filtersEl.querySelectorAll('button')].forEach(b=>b.classList.toggle('active',b.dataset.category==='전체'));}
+function openDetail(id){
+  const item=cases.find(x=>x.id===id); if(!item) return;
+  dialogContent.innerHTML=`<div class="detail">
+    <div class="category">${escapeHtml(item.category)} ${item.memoNo?`· ${escapeHtml(item.memoNo)}`:''}</div>
+    <h2>${escapeHtml(item.title)}</h2>
+    <div class="source">SOURCE · ${escapeHtml(item.source)}</div>
+    <div class="detail-grid">
+      <div class="detail-box"><span>진단코드</span><strong>${escapeHtml(item.diagnosisCode||'—')}</strong></div>
+      <div class="detail-box"><span>수술·처치코드</span><strong>${escapeHtml(item.procedureCode||'—')}</strong></div>
+    </div>
+    <div class="section"><h4>보상 결론</h4><p>${escapeHtml(item.conclusion)}</p></div>
+    <div class="section"><h4>관련 담보</h4><div class="tag-row">${item.coverage.map(v=>`<span>${escapeHtml(v)}</span>`).join('')}</div></div>
+    <div class="section"><h4>실무 체크포인트</h4><ul>${item.checkpoints.map(v=>`<li>${escapeHtml(v)}</li>`).join('')}</ul></div>
+    <div class="section"><h4>검색 키워드</h4><div class="tag-row">${item.keywords.map(v=>`<span>${escapeHtml(v)}</span>`).join('')}</div></div>
+  </div>`;
+  dialog.showModal();
+}
+searchInput.addEventListener('input',render);
+document.addEventListener('keydown',e=>{if(e.key==='/' && document.activeElement!==searchInput){e.preventDefault();searchInput.focus();} if(e.key==='Escape'&&dialog.open)dialog.close();});
+resultsEl.addEventListener('click',e=>{const c=e.target.closest('.card');if(c)openDetail(c.dataset.id);});
+resultsEl.addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&e.target.classList.contains('card')){e.preventDefault();openDetail(e.target.dataset.id);}});
+dialogClose.addEventListener('click',()=>dialog.close());
+dialog.addEventListener('click',e=>{if(e.target===dialog)dialog.close();});
+setupFilters();setupQuick();render();
+
+</script>
+</body>
+</html>
